@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"hair-planet/api"
+	"github.com/rs/cors"
 )
 
 func homepage(w http.ResponseWriter, r *http.Request) {
@@ -34,8 +35,11 @@ func allName(w http.ResponseWriter, r *http.Request) {
 
 func handleRequests() {
 	http.HandleFunc("/", homepage)
-	http.HandleFunc("/name", allName)
-	log.Fatal(http.ListenAndServe(":9192", nil))
+	mux := http.NewServeMux()
+	mux.HandleFunc("/name", allName)
+
+	handler := cors.Default().Handler(mux)
+	log.Fatal(http.ListenAndServe(":9192", handler))
 }
 
 func main() {
