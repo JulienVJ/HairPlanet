@@ -10,7 +10,7 @@ function App() {
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/test" element={<Test />} />
-        <Route path="/shop/:id" element={<Shop />} />
+        <Route path="/shop/:name" element={<Shop />} />
         {/* 
             <Route path="/contact" element={<Contact />} />
             <Route element={<NOT FOUND />} /> This is the 404 route 

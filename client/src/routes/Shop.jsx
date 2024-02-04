@@ -1,9 +1,114 @@
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import Container from '@mui/material/Container';
+import { Avatar, Box, Button, ImageList, ImageListItem, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
+import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
+import PeopleIcon from '@mui/icons-material/People';
 
 function Shop() {
-    let { id } = useParams();
+    const { name } = useParams();
+    const [shopDetails, setShopDetails] = useState()
 
-    return <h2>Shop ID: {id}</h2>;
+    useEffect(() => {
+        const fetchShopDetails = async (name) => {
+            try {
+                const response = await fetch(`http://localhost:9192/shopDetails?name=${name}`);
+                const data = await response.json();
+                console.log("Data", data)
+                setShopDetails(data)
+            } catch (error) {
+                console.error('Error fetching shop details:', error);
+            }
+        }
+
+        fetchShopDetails(name);
+    }, []);
+
+    const itemData = [
+        {
+            title: "hello",
+            img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
+        },
+        {
+            title: "hello",
+            img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
+        },
+        {
+            title: "hello",
+            img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
+        },
+        {
+            title: "hello",
+            img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
+        },
+        {
+            title: "hello",
+            img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
+        },
+        {
+            title: "hello",
+            img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
+        },
+    ]
+
+    return (
+        <Container>
+            <Box>
+                <h1>{shopDetails?.user.name}</h1>
+                <Box sx={{ display: "flex", padding: 3 }}>
+                    <ImageList
+                        sx={{ width: 500 }}
+                        variant="quilted"
+                        cols={3}
+                        rowHeight={150}
+                    >
+                        {itemData.map((item) => (
+                            <ImageListItem key={item.img} cols={item.cols || 1} rows={item.rows || 1}>
+                                <img
+                                    srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                                    src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
+                                    alt={item.title}
+                                    loading="lazy"
+                                />
+                            </ImageListItem>
+                        ))}
+                    </ImageList>
+                    <List sx={{ width: '100%', maxWidth: 360 }}>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <PermContactCalendarIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Contact" secondary={shopDetails?.user.phone} />
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <HomeIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Adresse" secondary={`${shopDetails?.user.address}, ${shopDetails?.user.zip} ${shopDetails?.user.city}`} />
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <PeopleIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Coiffeurs" secondary={
+                                shopDetails?.hairdressers.map((h) => {
+                                    return `${h?.FirstName} ${h?.LastName}`
+                                })
+                            } />
+                        </ListItem>
+                    </List>
+                </Box>
+            </Box>
+            <Button variant="contained">Prendre un rendez-vous</Button>
+        </Container>
+    )
 }
 
 export default Shop;
