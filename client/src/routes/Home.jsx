@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import '../App.css';
+import "../styles/Home.css"
 
 function Home() {
-  const [count, setCount] = useState(0);
   const [names, setNames] = useState([]);
 
   useEffect(() => {
@@ -18,12 +17,7 @@ function Home() {
 
   return (
     <div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount(count => count + 1)}>
-          count is {count}
-        </button>
-      </div>
+      <h1>HairPlanet</h1>
       {names.map((n) => (
         <>
           <p key={n.key}>{n.name}</p>
