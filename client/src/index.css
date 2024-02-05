@@ -46,6 +46,12 @@ html,
   /* 6 */
   -webkit-tap-highlight-color: transparent;
   /* 7 */
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /*
@@ -134,7 +140,19 @@ pre {
   font-variation-settings: normal;
   /* 3 */
   font-size: 1em;
-  /* 4 */
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  background-color: #3581B8;
+  color: white;
+}
+button:hover {
+  border-color: black;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
 }
 
 /*
@@ -560,7 +578,12 @@ video {
 
   to {
     transform: rotate(360deg);
+  a:hover {
+    color: #747bff;
   }
+  button {
+    background-color: #3581B8;
+  }}
 }
 
 @media (prefers-reduced-motion: no-preference) {
