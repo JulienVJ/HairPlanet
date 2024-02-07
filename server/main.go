@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"hair-planet/api"
 	"github.com/rs/cors"
+	"encoding/json"
+
 )
 
 func homepage(w http.ResponseWriter, r *http.Request) {
@@ -33,10 +35,46 @@ func allName(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func registerUser(w http.ResponseWriter, r *http.Request) {
+	// Decode JSON data from the request body
+	var registrationData struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+		IsShop   bool   `json:"is_shop"`
+	}
+	err := json.NewDecoder(r.Body).Decode(&registrationData)
+	if err != nil {
+		// Handle the decoding error (e.g., return a bad request response)
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+		log.Printf("Error decoding request body: %v", err)
+		return
+	}
+
+	// Call the appropriate registration function
+	if registrationData.IsShop {
+		err = api.RegisterShop(registrationData.Email, registrationData.Password, registrationData.IsShop)
+	} else {
+		err = api.RegisterUser(registrationData.Email, registrationData.Password, registrationData.IsShop)
+	}
+
+	if err != nil {
+		// Handle the registration error (e.g., return an error response)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		log.Printf("Error registering user/shop: %v", err)
+		return
+	}
+
+	// Return a success response
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Registration successful"))
+}
+
+
 func handleRequests() {
 	http.HandleFunc("/", homepage)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/name", allName)
+	mux.HandleFunc("/register", registerUser)
 
 	handler := cors.Default().Handler(mux)
 	log.Fatal(http.ListenAndServe(":9192", handler))
