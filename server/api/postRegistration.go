@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -87,47 +88,32 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error writing response: %v", err)
 	}
 }
-func RegisterUser(email, password string, isShop bool) error {
-	// Connexion à la base de données
-	client, err := connectDB()
-	if err != nil {
-		return err
-	}
-	defer client.Disconnect(context.Background())
 
-	// Insérer les données de l'utilisateur dans la collection appropriée
-	usersCollection := client.Database("HairPlanet").Collection("users")
-	_, err = usersCollection.InsertOne(context.Background(), bson.M{
-		"email":    email,
-		"password": password,
-		"role": isShop,
-	})
-	if err != nil {
-		return err
-	}
+// Add debugging statements
+func RegisterUser(email string, password string, isShop bool) error {
+    fmt.Println("isShop value:", isShop) // Debugging statement
 
-	return nil
+    client, err := connectDB()
+    if err != nil {
+        return err
+    }
+    defer client.Disconnect(context.Background())
+
+    role := "CLIENT"
+    if isShop {
+        role = "SHOP"
+    }
+
+    usersCollection := client.Database("HairPlanet").Collection("users")
+    _, err = usersCollection.InsertOne(context.Background(), bson.M{
+        "email":    email,
+        "password": password,
+        "role":     role,
+    })
+    if err != nil {
+        return err
+    }
+
+    return nil
 }
 
-// RegisterShop enregistre un nouveau magasin dans le système
-func RegisterShop(email, password string, isShop bool) error {
-	// Connexion à la base de données
-	client, err := connectDB()
-	if err != nil {
-		return err
-	}
-	defer client.Disconnect(context.Background())
-
-	// Insérer les données du magasin dans la collection appropriée
-	shopsCollection := client.Database("HairPlanet").Collection("users")
-	_, err = shopsCollection.InsertOne(context.Background(), bson.M{
-		"email":    email,
-		"password": password,
-		"role": isShop,
-	})
-	if err != nil {
-		return err
-	}
-
-	return nil
-}

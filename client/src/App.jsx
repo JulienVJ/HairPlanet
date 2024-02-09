@@ -3,12 +3,14 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './routes/Home';
 import Test from './routes/Test';
 import Shop from './routes/Shop';
+import Login from './routes/Login';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route exact path="/" element={<Home />} />
+        <Route exact path="/login" element={<Login />} />
         <Route path="/test" element={<Test />} />
         <Route path="/shop/:id" element={<Shop />} />
         {/* 

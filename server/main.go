@@ -1,13 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"hair-planet/api"
 	"log"
 	"net/http"
-	"hair-planet/api"
-	"github.com/rs/cors"
-	"encoding/json"
 
+	"github.com/rs/cors"
 )
 
 func homepage(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +40,7 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 	var registrationData struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
-		IsShop   bool   `json:"is_shop"`
+		IsShop   bool   `json:"isShop"`
 	}
 	err := json.NewDecoder(r.Body).Decode(&registrationData)
 	if err != nil {
@@ -49,13 +49,8 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error decoding request body: %v", err)
 		return
 	}
-
 	// Call the appropriate registration function
-	if registrationData.IsShop {
-		err = api.RegisterShop(registrationData.Email, registrationData.Password, registrationData.IsShop)
-	} else {
-		err = api.RegisterUser(registrationData.Email, registrationData.Password, registrationData.IsShop)
-	}
+	err = api.RegisterUser(registrationData.Email, registrationData.Password, registrationData.IsShop)
 
 	if err != nil {
 		// Handle the registration error (e.g., return an error response)
