@@ -1,16 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"hair-planet/api"
 	"log"
 	"net/http"
-	"hair-planet/api"
+
 	"github.com/rs/cors"
 )
-
-func homepage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hompeage Hello")
-}
 
 func allName(w http.ResponseWriter, r *http.Request) {
 	// Call the GetAllName function to get JSON data
@@ -34,10 +30,9 @@ func allName(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRequests() {
-	http.HandleFunc("/", homepage)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/name", allName)
-
+	mux.HandleFunc("/shopDetails", api.ShopDetailsHandler)
 	handler := cors.Default().Handler(mux)
 	log.Fatal(http.ListenAndServe(":9192", handler))
 }
