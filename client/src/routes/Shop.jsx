@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Container from '@mui/material/Container';
-import { Avatar, Box, ImageList, ImageListItem, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
+import { Avatar, Box, Button, ImageList, ImageListItem, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import PeopleIcon from '@mui/icons-material/People';
@@ -96,17 +96,14 @@ function Shop() {
                             <ListItemText
                                 primary="Coiffeurs"
                                 secondary={
-                                    <>
-                                        {shopDetails?.hairdressers.map((h, index) => (
-                                            <div key={h?.id}>
-                                                {`${h?.FirstName} ${h?.LastName}`}
-                                                {index < shopDetails?.hairdressers.length - 1 && <br />}
-                                            </div>
-                                        ))}
-                                    </>
+                                    shopDetails?.hairdressers.map((h, index) => (
+                                        <Typography key={index} component="span" variant="body2" color="textPrimary">
+                                            {`${h?.FirstName} ${h?.LastName}`}
+                                            <br />
+                                        </Typography>
+                                    ))
                                 }
                             />
-
                         </ListItem>
                     </List>
                 </Box>
