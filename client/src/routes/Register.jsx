@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import "../styles/Home.css"
 
-const Login = () => {
+const Register = () => {
+	const navigateTo = useNavigate();
     const [registrationData, setRegistrationData] = useState({
         email: '',
         password: '',
+        isShop: false
     });
 
     const handleInputChange = (event) => {
@@ -12,6 +15,14 @@ const Login = () => {
         setRegistrationData({
             ...registrationData,
             [name]: value
+        });
+    };
+
+    const handleCheckboxChange = (event) => {
+        const { name, checked } = event.target;
+        setRegistrationData({
+            ...registrationData,
+            [name]: checked
         });
     };
 
@@ -27,6 +38,7 @@ const Login = () => {
             });
             if (response.ok) {
                 console.log('Registration successful');
+				navigateTo('/login')
                 // Gérer la réussite de l'inscription ici, par exemple, rediriger l'utilisateur vers une page de connexion
             } else {
                 console.error('Registration failed:', response.statusText);
@@ -40,20 +52,26 @@ const Login = () => {
 
     return (
         <div>
-            <h2>Connexion d'un utilisateur</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="email">Email:</label>
-                    <input type="email" id="email" name="email" value={registrationData.email} onChange={handleInputChange} required />
-                </div>
-                <div>
-                    <label htmlFor="password">Mot de passe:</label>
-                    <input type="password" id="password" name="password" value={registrationData.password} onChange={handleInputChange} required />
-                </div>
-                <button type="submit">Se connecter</button>
-            </form>
-        </div>
-    );
+			<h2>Inscription d'un utilisateur</h2>
+			<form onSubmit={handleSubmit}>
+				<div>
+					<label htmlFor="email">Email:</label>
+					<input type="email" id="email" name="email" value={registrationData.email} onChange={handleInputChange} required />
+				</div>
+				<div>
+					<label htmlFor="password">Mot de passe:</label>
+					<input type="password" id="password" name="password" value={registrationData.password} onChange={handleInputChange} required />
+				</div>
+				<div>
+					<label>
+						<input type="checkbox" name="isShop" checked={registrationData.isShop} onChange={handleCheckboxChange} />
+						Inscrire en tant que magasin
+					</label>
+				</div>
+				<button type="submit">S'inscrire</button>
+			</form>
+		</div>
+	)
 };
 
-export default Login;
+export default Register;
