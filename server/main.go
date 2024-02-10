@@ -59,12 +59,52 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Registration successful"))
 }
 
+func loginUser(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		log.Printf("Invalid HTTP method: %s", r.Method)
+		return
+	}
+
+	// Decode JSON data from the request body
+	var loginData struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+	err := json.NewDecoder(r.Body).Decode(&loginData)
+	if err != nil {
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+		log.Printf("Error decoding login request: %v", err)
+		return
+	}
+
+	log.Printf("Login request received: %+v", loginData) // Adding log to display received data
+
+	// Call the appropriate login function
+	authToken, err := api.LoginUser(loginData.Email, loginData.Password)
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		log.Printf("Error logging in: %v", err)
+		return
+	}
+
+	// Return the authentication token in the response
+	response := map[string]string{"token": authToken}
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		log.Printf("Error encoding response: %v", err)
+		return
+	}
+}
+
 func handleRequests() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/name", allName)
 	mux.HandleFunc("/shopDetails", api.ShopDetailsHandler)
 	mux.HandleFunc("/createHairdresser", api.CreateHairdresser)
 	mux.HandleFunc("/createReservation", api.CreateReservation)
+	mux.HandleFunc("/login", loginUser)
 	mux.HandleFunc("/register", registerUser)
 
 	handler := cors.Default().Handler(mux)
