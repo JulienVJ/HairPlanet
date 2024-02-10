@@ -1,10 +1,34 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Container from '@mui/material/Container';
-import { Avatar, Box, Button, ImageList, ImageListItem, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
+import { Avatar, Box, ImageList, ImageListItem, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import PeopleIcon from '@mui/icons-material/People';
+import FormDialog from './blocks/FormDialog'
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+
+const itemData = [
+    {
+        img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
+    },
+    {
+        img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
+    },
+    {
+        img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
+    },
+    {
+        img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
+    },
+    {
+        img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
+    },
+    {
+        img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
+    },
+]
 
 function Shop() {
     const { name } = useParams();
@@ -15,7 +39,6 @@ function Shop() {
             try {
                 const response = await fetch(`http://localhost:9192/shopDetails?name=${name}`);
                 const data = await response.json();
-                console.log("Data", data)
                 setShopDetails(data)
             } catch (error) {
                 console.error('Error fetching shop details:', error);
@@ -24,33 +47,6 @@ function Shop() {
 
         fetchShopDetails(name);
     }, []);
-
-    const itemData = [
-        {
-            title: "hello",
-            img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
-        },
-        {
-            title: "hello",
-            img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
-        },
-        {
-            title: "hello",
-            img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
-        },
-        {
-            title: "hello",
-            img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
-        },
-        {
-            title: "hello",
-            img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
-        },
-        {
-            title: "hello",
-            img: "https://plus.unsplash.com/premium_photo-1677616799911-786522e9a1d1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8SGFpciUyMGRyZXNzZXJ8ZW58MHx8MHx8fDA%3D",
-        },
-    ]
 
     return (
         <Container>
@@ -97,16 +93,27 @@ function Shop() {
                                     <PeopleIcon />
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary="Coiffeurs" secondary={
-                                shopDetails?.hairdressers.map((h) => {
-                                    return `${h?.FirstName} ${h?.LastName}`
-                                })
-                            } />
+                            <ListItemText
+                                primary="Coiffeurs"
+                                secondary={
+                                    <>
+                                        {shopDetails?.hairdressers.map((h, index) => (
+                                            <div key={h?.id}>
+                                                {`${h?.FirstName} ${h?.LastName}`}
+                                                {index < shopDetails?.hairdressers.length - 1 && <br />}
+                                            </div>
+                                        ))}
+                                    </>
+                                }
+                            />
+
                         </ListItem>
                     </List>
                 </Box>
             </Box>
-            <Button variant="contained">Prendre un rendez-vous</Button>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <FormDialog shopDetails={shopDetails} />
+            </LocalizationProvider>
         </Container>
     )
 }
