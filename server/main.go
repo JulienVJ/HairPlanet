@@ -34,6 +34,7 @@ func handleRequests() {
 	mux.HandleFunc("/name", allName)
 	mux.HandleFunc("/shopDetails", api.ShopDetailsHandler)
 	mux.HandleFunc("/createHairdresser", api.CreateHairdresser)
+	mux.HandleFunc("/createReservation", api.CreateReservation)
 	handler := cors.Default().Handler(mux)
 	log.Fatal(http.ListenAndServe(":9192", handler))
 }
