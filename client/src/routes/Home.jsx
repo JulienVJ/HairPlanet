@@ -26,7 +26,7 @@ function Home() {
       <Box>
         <h1>HairPlanet</h1>
         <List>
-          {shops.map(shop => (<ListItem key={shop.id}><Link href={`/shop/${shop.name}`}><ListItemText primary={shop.name} secondary={shop.address + shop.city + shop.zip} /></Link></ListItem>))}
+          {shops.map(shop => (<ListItem key={shop._id}><Link href={`/shop/${shop.shopName}`}><ListItemText primary={shop.shopName} secondary={shop.address} /></Link></ListItem>))}
         </List>
       </Box>
     </Container>

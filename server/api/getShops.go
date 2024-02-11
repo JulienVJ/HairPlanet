@@ -3,74 +3,65 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"time"
 
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// User represents a user document in MongoDB
-type User struct {
-	ID   string `json:"_id"`
-	Name string `json:"name"`
-	Role string `json:"role"`
-}
-
-func GetShopsHandler(w http.ResponseWriter, r *http.Request) {
-	// Set up MongoDB client options
-	uri := os.Getenv("MONGODB_URI")
-	clientOptions := options.Client().ApplyURI(uri)
-
-	// Connect to MongoDB
-	client, err := mongo.Connect(context.Background(), clientOptions)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+func GetShops() ([]byte, error) {
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found")
 	}
-	defer client.Disconnect(context.Background())
 
-	// Define a slice to store retrieved users
-	var shops []User
+	uri := os.Getenv("MONGODB_URI")
+	if uri == "" {
+		log.Fatal("You must set your 'MONGODB_URI' environment variable.")
+		return nil, fmt.Errorf("MONGODB_URI environment variable not set")
+	}
 
-	// Define the MongoDB collection and filter criteria
-	collection := client.Database("HairPlanet").Collection("users")
-	log.Println("coll :", collection)
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
+	if err != nil {
+		log.Printf("Error connecting to MongoDB: %v", err)
+		return nil, err
+	}
 
+	defer func() {
+		if err := client.Disconnect(context.TODO()); err != nil {
+			log.Printf("Error disconnecting from MongoDB: %v", err)
+		}
+	}()
+
+	coll := client.Database("HairPlanet").Collection("users")
+
+	// Define a filter (empty in this example to get all documents)
 	filter := bson.M{"role": "SHOP"}
 
-	// Query MongoDB for users matching the filter
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	cur, err := collection.Find(ctx, filter)
+	// Find documents in the collection
+	cursor, err := coll.Find(context.TODO(), filter)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		log.Printf("Error querying MongoDB: %v", err)
+		return nil, err
 	}
-	defer cur.Close(ctx)
-	log.Println("cur :", cur)
+	defer cursor.Close(context.TODO())
 
-	// Iterate through the results and decode each into a User struct
-	for cur.Next(ctx) {
-		var user User
-		if err := cur.Decode(&user); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		shops = append(shops, user)
+	// Decode the results
+	var results []bson.M
+	if err := cursor.All(context.TODO(), &results); err != nil {
+		log.Printf("Error decoding MongoDB results: %v", err)
+		return nil, err
 	}
 
-	// Check for errors during cursor iteration
-	if err := cur.Err(); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	// Print or use the results as JSON
+	jsonData, err := json.MarshalIndent(results, "", "    ")
+	if err != nil {
+		log.Printf("Error encoding JSON: %v", err)
+		return nil, err
 	}
 
-	// Encode the retrieved users slice into JSON and write it as the response
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(shops)
+	return jsonData, nil
 }
