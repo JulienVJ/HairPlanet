@@ -16,12 +16,10 @@ import (
 
 // Shop struct represents a user document in MongoDB
 type Shop struct {
-	ID      string `bson:"_id"`
-	name    string `bson:"name"`
-	phone   string `bson:"phone"`
+	ID   string `bson:"_id"`
+	shopName string `bson:"shopName"`
+	phone string `bson:"phone"`
 	address string `bson:"address"`
-	zip     string `bson:"zip"`
-	city    string `bson:"city"`
 }
 
 // Hairdresser struct represents a hairdresser document in MongoDB
@@ -54,7 +52,7 @@ func AllDetailsShopByName(shopName string) ([]byte, error) {
 
 	usersCollection := client.Database("HairPlanet").Collection("users")
 	var user bson.M
-	err = usersCollection.FindOne(context.Background(), bson.D{{"name", shopName}}).Decode(&user)
+	err = usersCollection.FindOne(context.Background(), bson.D{{"shopName", shopName}}).Decode(&user)
 	if err != nil {
 		return nil, err
 	}
@@ -78,9 +76,22 @@ func AllDetailsShopByName(shopName string) ([]byte, error) {
 		return nil, err
 	}
 
+	reservationsCollection := client.Database("HairPlanet").Collection("reservations")
+    reservationCursor, err := reservationsCollection.Find(context.TODO(), bson.D{{"shop_id", shopID}})
+    if err != nil {
+        return nil, err
+    }
+    defer reservationCursor.Close(context.Background())
+
+    var reservations []Reservation
+    if err := reservationCursor.All(context.Background(), &reservations); err != nil {
+        return nil, err
+    }
+
 	combinedData := map[string]interface{}{
 		"user":         user,
 		"hairdressers": hairdressers,
+		"reservations": reservations,
 	}
 
 	jsonData, err := json.MarshalIndent(combinedData, "", "    ")
@@ -92,12 +103,12 @@ func AllDetailsShopByName(shopName string) ([]byte, error) {
 }
 
 func ShopDetailsHandler(w http.ResponseWriter, r *http.Request) {
-	shopName := r.URL.Query().Get("name")
+	shopName := r.URL.Query().Get("shopName")
 
 	jsonData, err := AllDetailsShopByName(shopName)
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		log.Printf("Error getting data: %v", err)
+		log.Printf("Error getting data for shop %s: %v", shopName, err)
 		return
 	}
 
@@ -107,3 +118,4 @@ func ShopDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error writing response: %v", err)
 	}
 }
+

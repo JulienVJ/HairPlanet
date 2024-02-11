@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Container from '@mui/material/Container';
-import { Avatar, Box, Button, ImageList, ImageListItem, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+import { Avatar, Box, ImageList, ImageListItem, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import PeopleIcon from '@mui/icons-material/People';
@@ -31,13 +31,13 @@ const itemData = [
 ]
 
 function Shop() {
-    const { name } = useParams();
+    const { shopName } = useParams();
     const [shopDetails, setShopDetails] = useState()
 
     useEffect(() => {
-        const fetchShopDetails = async (name) => {
+        const fetchShopDetails = async (shopName) => {
             try {
-                const response = await fetch(`http://localhost:9192/shopDetails?name=${name}`);
+                const response = await fetch(`http://localhost:9192/shopDetails?shopName=${shopName}`);
                 const data = await response.json();
                 setShopDetails(data)
             } catch (error) {
@@ -45,13 +45,13 @@ function Shop() {
             }
         }
 
-        fetchShopDetails(name);
+        fetchShopDetails(shopName);
     }, []);
 
     return (
         <Container>
             <Box>
-                <h1>{shopDetails?.user.name}</h1>
+                <h1>{shopDetails?.user.shopName}</h1>
                 <Box sx={{ display: "flex", padding: 3 }}>
                     <ImageList
                         sx={{ width: 500 }}
@@ -85,7 +85,7 @@ function Shop() {
                                     <HomeIcon />
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary="Adresse" secondary={`${shopDetails?.user.address}, ${shopDetails?.user.zip} ${shopDetails?.user.city}`} />
+                            <ListItemText primary="Adresse" secondary={shopDetails?.user.address} />
                         </ListItem>
                         <ListItem>
                             <ListItemAvatar>
@@ -96,7 +96,7 @@ function Shop() {
                             <ListItemText
                                 primary="Coiffeurs"
                                 secondary={
-                                    shopDetails?.hairdressers.map((h, index) => (
+                                    (shopDetails?.hairdressers || []).map((h, index) => (
                                         <Typography key={index} component="span" variant="body2" color="textPrimary">
                                             {`${h?.FirstName} ${h?.LastName}`}
                                             <br />
