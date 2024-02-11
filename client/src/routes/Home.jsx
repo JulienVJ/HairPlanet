@@ -2,32 +2,30 @@ import { useState, useEffect } from 'react';
 import "../styles/Home.css"
 
 function Home() {
-  const [names, setNames] = useState([]);
-
+  const [shops, setShops] = useState([])
   useEffect(() => {
-    // Fetch data from the Golang API
-    fetch('http://localhost:9192/name')
-      .then(response => response.json())
-      .then(data => {
-        // Assuming the API returns an array of names
-        setNames(data);
-      })
-      .catch(error => console.error('Error fetching data:', error));
-  }, []); // Empty dependency array means this effect runs once after the first render
+    const fetchShops = async () => {
+      try {
+        const response = await fetch('http://localhost:9192/getShops');
+        if (!response.ok) {
+          throw new Error('Failed to fetch shops');
+        }
+        const data = await response.json();
+        setShops(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchShops();
+  }, []);
 
   return (
     <div>
       <h1>HairPlanet</h1>
-      {names.map((n) => (
-        <>
-          <p key={n.key}>{n.name}</p>
-          <p key={n.key}>{n.age}</p>
-        </>
-
-      ))}
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
+      {shops.map(shop => (<ul key={shop.id}>{shop.name}</ul>))}
     </div>
   );
 }
