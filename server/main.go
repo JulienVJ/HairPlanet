@@ -39,6 +39,36 @@ func allShops(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+func allReservations(w http.ResponseWriter, r *http.Request) {
+	// Call the GetAllName function to get JSON data
+	jsonData, err := api.GetAllReservations()
+	if err != nil {
+		// Handle the error (e.g., return an error response)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		log.Printf("Error getting data: %v", err)
+		return
+	}
+	// Set the response header to indicate JSON content
+	w.Header().Set("Content-Type", "application/json")
+
+	// Write the JSON data to the response
+	_, err = w.Write(jsonData)
+	if err != nil {
+		// Handle the error (e.g., log it)
+		log.Printf("Error writing response: %v", err)
+	}
+}
+
+func allUsers(w http.ResponseWriter, r *http.Request) {
+	// Call the GetAllName function to get JSON data
+	jsonData, err := api.GetAllUsers()
+	if err != nil {
+		// Handle the error (e.g., return an error response)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		log.Printf("Error getting data: %v", err)
+		return
+	}
+
 	// Set the response header to indicate JSON content
 	w.Header().Set("Content-Type", "application/json")
 
@@ -62,6 +92,8 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 		ShopName  *string `json:"shopName,omitempty"`
 		Phone     *string `json:"phone,omitempty"`
 		Address   *string `json:"address,omitempty"`
+		Zip       *string `json:"zip,omitempty"`
+		City      *string `json:"city,omitempty"`
 	}
 	err := json.NewDecoder(r.Body).Decode(&registrationData)
 	if err != nil {
@@ -72,7 +104,7 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Call the appropriate registration function with the password
-	err = api.RegisterUser(registrationData.Email, registrationData.Password, registrationData.IsShop, registrationData.FirstName, registrationData.LastName, registrationData.ShopName, registrationData.Phone, registrationData.Address)
+	err = api.RegisterUser(registrationData.Email, registrationData.Password, registrationData.IsShop, registrationData.FirstName, registrationData.LastName, registrationData.ShopName, registrationData.Phone, registrationData.Address, registrationData.Zip, registrationData.City)
 
 	if err != nil {
 		// Handle the registration error (e.g., return an error response)
@@ -130,6 +162,8 @@ func handleRequests() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/home", allShops)
 	mux.HandleFunc("/name", allName)
+	mux.HandleFunc("/reservations", allReservations)
+	mux.HandleFunc("/users", allUsers)
 	mux.HandleFunc("/shopDetails", api.ShopDetailsHandler)
 	mux.HandleFunc("/createHairdresser", api.CreateHairdresser)
 	mux.HandleFunc("/createReservation", api.CreateReservation)
