@@ -4,11 +4,15 @@ import Home from './routes/Home';
 import Test from './routes/Test';
 import Shop from './routes/Shop';
 import FormHairdresser from './routes/FormHairdresser';
+import Login from './routes/Login';
+import Register from './routes/Register'
 
 function App() {
   return (
     <Router>
       <Routes>
+        <Route exact path="/" element={<Register />} />
+        <Route exact path="/login" element={<Login />} />
         <Route exact path="/home" element={<Home />} />
         <Route path="/test" element={<Test />} />
         <Route path="/shop/:name" element={<Shop />} />
