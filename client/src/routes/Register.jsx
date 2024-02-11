@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Checkbox, Grid, Button, FormControlLabel, TextField, Typography } from '@mui/material';
@@ -31,6 +32,10 @@ const Register = () => {
         });
     };
 
+    const handleLoginClick = () => {
+        navigateTo('/login');
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -44,14 +49,11 @@ const Register = () => {
             if (response.ok) {
                 console.log('Registration successful');
                 navigateTo('/login');
-                // Gérer la réussite de l'inscription ici, par exemple, rediriger l'utilisateur vers une page de connexion
             } else {
                 console.error('Registration failed:', response.statusText);
-                // Gérer l'échec de l'inscription ici, par exemple, afficher un message d'erreur à l'utilisateur
             }
         } catch (error) {
             console.error('Error registering:', error);
-            // Gérer les erreurs réseau ici, par exemple, afficher un message d'erreur à l'utilisateur
         }
     };
 
@@ -140,13 +142,14 @@ const Register = () => {
                             />
                         </>
                     )}
-                    <div>
-                        <FormControlLabel
-                            control={<Checkbox name="isShop" checked={registrationData.isShop} onChange={handleCheckboxChange} />}
-                            label="S'inscrire en tant que magasin"
-                        />
-                    </div>
-                    <div>
+                    <FormControlLabel
+                        control={<Checkbox name="isShop" checked={registrationData.isShop} onChange={handleCheckboxChange} />}
+                        label="S'inscrire en tant que magasin"
+                    />
+                    <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'space-between' }}>
+                        <Button type="button" variant="contained" style={{ backgroundColor: 'white', border: '2px solid #1976d2', color: '#1976d2' }} onClick={handleLoginClick}>
+                            Se connecter
+                        </Button>
                         <Button type="submit" variant="contained" color="primary">
                             S'inscrire
                         </Button>
