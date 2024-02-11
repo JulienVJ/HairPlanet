@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import "../styles/Home.css";
+import { Button, TextField, Typography, Grid } from '@mui/material';
+
 
 const Login = () => {
     const navigateTo = useNavigate();
@@ -8,7 +9,8 @@ const Login = () => {
         email: '',
         password: ''
     });
-
+    
+    const [errorMessage, setErrorMessage] = useState('');
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setLoginData({
@@ -35,6 +37,7 @@ const Login = () => {
                 navigateTo('/home'); // Redirigez l'utilisateur vers le tableau de bord après la connexion réussie
             } else {
                 console.error('Login failed:', response.statusText);
+                setErrorMessage("Votre email ou votre mot de passe semble être incorrect")
                 // Gérer l'échec de la connexion ici, par exemple, afficher un message d'erreur à l'utilisateur
             }
         } catch (error) {
@@ -42,22 +45,42 @@ const Login = () => {
             // Gérer les erreurs réseau ici, par exemple, afficher un message d'erreur à l'utilisateur
         }
     };
+    
 
     return (
-        <div>
-            <h2>Connexion</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="email">Email:</label>
-                    <input type="email" id="email" name="email" value={loginData.email} onChange={handleInputChange} required />
-                </div>
-                <div>
-                    <label htmlFor="password">Mot de passe:</label>
-                    <input type="password" id="password" name="password" value={loginData.password} onChange={handleInputChange} required />
-                </div>
-                <button type="submit">Se connecter</button>
-            </form>
-        </div>
+        <Grid container justifyContent="center" alignItems="center">
+            <Grid item xs={12} sm={8} md={6} lg={4}>
+                <Typography variant="h2">Connexion</Typography>
+                <form onSubmit={handleSubmit}>
+                    <TextField
+                        id="email"
+                        name="email"
+                        label="Email"
+                        type="email"
+                        value={loginData.email}
+                        onChange={handleInputChange}
+                        fullWidth
+                        required
+                        margin="normal"
+                    />
+                    <TextField
+                        id="password"
+                        name="password"
+                        label="Mot de passe"
+                        type="password"
+                        value={loginData.password}
+                        onChange={handleInputChange}
+                        fullWidth
+                        required
+                        margin="normal"
+                    />
+                     {errorMessage && <div style={{ color: 'red', padding: '20px' }}>{errorMessage}</div>}
+                    <Button type="submit" variant="contained" color="primary">
+                        Se connecter
+                    </Button>
+                </form>
+            </Grid>
+        </Grid>
     );
 };
 

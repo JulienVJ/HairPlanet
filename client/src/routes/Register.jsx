@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import "../styles/Home.css"
+import { Checkbox, Grid, Button, FormControlLabel, TextField, Typography } from '@mui/material';
 
 const Register = () => {
-	const navigateTo = useNavigate();
+    const navigateTo = useNavigate();
     const [registrationData, setRegistrationData] = useState({
         email: '',
         password: '',
@@ -38,7 +38,7 @@ const Register = () => {
             });
             if (response.ok) {
                 console.log('Registration successful');
-				navigateTo('/login')
+                navigateTo('/login');
                 // Gérer la réussite de l'inscription ici, par exemple, rediriger l'utilisateur vers une page de connexion
             } else {
                 console.error('Registration failed:', response.statusText);
@@ -51,27 +51,47 @@ const Register = () => {
     };
 
     return (
-        <div>
-			<h2>Inscription d'un utilisateur</h2>
-			<form onSubmit={handleSubmit}>
-				<div>
-					<label htmlFor="email">Email:</label>
-					<input type="email" id="email" name="email" value={registrationData.email} onChange={handleInputChange} required />
-				</div>
-				<div>
-					<label htmlFor="password">Mot de passe:</label>
-					<input type="password" id="password" name="password" value={registrationData.password} onChange={handleInputChange} required />
-				</div>
-				<div>
-					<label>
-						<input type="checkbox" name="isShop" checked={registrationData.isShop} onChange={handleCheckboxChange} />
-						Inscrire en tant que magasin
-					</label>
-				</div>
-				<button type="submit">S'inscrire</button>
-			</form>
-		</div>
-	)
+        <Grid container justifyContent="center" alignItems="center" spacing={2}>
+            <Grid item xs={12} sm={8} md={6} lg={4}>
+                <Typography variant="h2">Inscription d'un utilisateur</Typography>
+                <form onSubmit={handleSubmit}>
+                    <TextField
+                        id="email"
+                        name="email"
+                        label="Email"
+                        type="email"
+                        value={registrationData.email}
+                        onChange={handleInputChange}
+                        fullWidth
+                        required
+                        margin="normal"
+                    />
+                    <TextField
+                        id="password"
+                        name="password"
+                        label="Mot de passe"
+                        type="password"
+                        value={registrationData.password}
+                        onChange={handleInputChange}
+                        fullWidth
+                        required
+                        margin="normal"
+                    />
+                    <div>
+                        <FormControlLabel
+                            control={<Checkbox name="isShop" checked={registrationData.isShop} onChange={handleCheckboxChange} />}
+                            label="S'nscrire en tant que magasin"
+                        />
+                    </div>
+                    <div>
+                        <Button type="submit" variant="contained" color="primary">
+                            S'inscrire
+                        </Button>
+                    </div>
+                </form>
+            </Grid>
+        </Grid>
+    );
 };
 
 export default Register;
