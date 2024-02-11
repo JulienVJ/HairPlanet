@@ -82,7 +82,7 @@ const Register = () => {
                         required
                         margin="normal"
                     />
-                    {registrationData.isShop && (
+                    {registrationData.isShop === false && (
                         <>
                             <TextField
                                 id="firstName"
@@ -104,6 +104,10 @@ const Register = () => {
                                 required
                                 margin="normal"
                             />
+                        </>
+                    )}
+                    {registrationData.isShop && (
+                        <>
                             <TextField
                                 id="shopName"
                                 name="shopName"
