@@ -1,0 +1,24 @@
+.reservations-title {
+    font-size: 32px;
+    font-weight: 400;
+}
+
+.reservations-cards {
+    padding: 32px;
+    border: double;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 10px;
+}
+
+.reservation-card {
+    padding: 16px;
+    border: outset;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 10px;
+    width: -webkit-fill-available;
+    margin-bottom: 14px;
+}

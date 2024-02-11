@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import "../styles/AdminHomePage.css"
+import "../styles/AllUsers.css"
 
 function Users() {
   const [names, setNames] = useState([]);
@@ -17,17 +17,18 @@ function Users() {
 
   return (
     <div>
-      <h1>HairPlanet</h1>
+      <h1 className='admin-title'>Liste des utilisateurs</h1>
+      <div className='users-card'>
       {names.map((n) => (
         <>
+        <div className='user-list'>
           <p key={n.key}>{n.name}</p>
           <p key={n.key}>{n.email}</p>
+        </div>
         </>
 
-      ))}
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      ))}        
+      </div>
     </div>
   );
 }

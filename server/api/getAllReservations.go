@@ -13,7 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetAllUsers() ([]byte, error) {
+func GetAllReservations() ([]byte, error) {
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
 	}
@@ -36,7 +36,7 @@ func GetAllUsers() ([]byte, error) {
 		}
 	}()
 
-	coll := client.Database("HairPlanet").Collection("users")
+	coll := client.Database("HairPlanet").Collection("reservations")
 
 	// Define a filter (empty in this example to get all documents)
 	filter := bson.M{}
