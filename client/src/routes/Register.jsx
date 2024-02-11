@@ -12,7 +12,9 @@ const Register = () => {
         lastName: '',
         shopName: '',
         phone: '',
-        address: ''
+        address: '',
+        zip: '',
+        city: '',
     });
 
     const handleInputChange = (event) => {
@@ -82,7 +84,7 @@ const Register = () => {
                         required
                         margin="normal"
                     />
-                    {registrationData.isShop === false && (
+                    {!registrationData.isShop && (
                         <>
                             <TextField
                                 id="firstName"
@@ -133,6 +135,26 @@ const Register = () => {
                                 name="address"
                                 label="Adresse"
                                 value={registrationData.address}
+                                onChange={handleInputChange}
+                                fullWidth
+                                required
+                                margin="normal"
+                            />
+                            <TextField
+                                id="zip"
+                                name="zip"
+                                label="Code Postal"
+                                value={registrationData.zip}
+                                onChange={handleInputChange}
+                                fullWidth
+                                required
+                                margin="normal"
+                            />
+                            <TextField
+                                id="city"
+                                name="city"
+                                label="Ville"
+                                value={registrationData.city}
                                 onChange={handleInputChange}
                                 fullWidth
                                 required

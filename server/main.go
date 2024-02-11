@@ -42,6 +42,8 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
         ShopName  *string `json:"shopName,omitempty"`
         Phone     *string `json:"phone,omitempty"`
         Address   *string `json:"address,omitempty"`
+        Zip       *string `json:"zip,omitempty"`
+        City      *string `json:"city,omitempty"`
     }
     err := json.NewDecoder(r.Body).Decode(&registrationData)
     if err != nil {
@@ -52,7 +54,7 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
     }
 
     // Call the appropriate registration function with the password
-    err = api.RegisterUser(registrationData.Email, registrationData.Password, registrationData.IsShop, registrationData.FirstName, registrationData.LastName, registrationData.ShopName, registrationData.Phone, registrationData.Address)
+    err = api.RegisterUser(registrationData.Email, registrationData.Password, registrationData.IsShop, registrationData.FirstName, registrationData.LastName, registrationData.ShopName, registrationData.Phone, registrationData.Address, registrationData.Zip, registrationData.City)
 
     if err != nil {
         // Handle the registration error (e.g., return an error response)
