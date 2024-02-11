@@ -24,10 +24,12 @@ function Home() {
   return (
     <Container>
       <Box>
-        <h1>HairPlanet</h1>
-        <List>
+        <h1 className='shops-title'>HairPlanet</h1>
+        <div className='shops-cards'>
+        <List >
           {shops.map(shop => (<ListItem key={shop._id}><Link href={`/shop/${shop.shopName}`}><ListItemText primary={shop.shopName} secondary={shop.address} /></Link></ListItem>))}
         </List>
+        </div>
       </Box>
     </Container>
   );

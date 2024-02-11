@@ -30,7 +30,7 @@ func allName(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func allShops(w http.ResponseWriter, r *http.Request) {
-	// Call the GetAllName function to get JSON data
+	// Call the GetShops function to get JSON data
 	jsonData, err := api.GetShops()
 	if err != nil {
 		// Handle the error (e.g., return an error response)
@@ -38,6 +38,15 @@ func allShops(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error getting data: %v", err)
 		return
 	}
+	// Set the response header to indicate JSON content
+	w.Header().Set("Content-Type", "application/json")
+	// Write the JSON data to the response
+	_, err = w.Write(jsonData)
+	if err != nil {
+		// Handle the error (e.g., log it)
+		log.Printf("Error writing response: %v", err)
+	}
+}
 
 func allReservations(w http.ResponseWriter, r *http.Request) {
 	// Call the GetAllName function to get JSON data
