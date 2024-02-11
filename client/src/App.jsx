@@ -9,7 +9,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route exact path="/getShops" element={<Home />} />
+        <Route exact path="/home" element={<Home />} />
         <Route path="/test" element={<Test />} />
         <Route path="/shop/:name" element={<Shop />} />
         <Route path="/createHairdresser" element={<FormHairdresser />} />

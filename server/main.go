@@ -31,7 +31,7 @@ func allName(w http.ResponseWriter, r *http.Request) {
 
 func handleRequests() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/getShops", api.GetShopsHandler)
+	mux.HandleFunc("/home", api.GetShopsHandler)
 	mux.HandleFunc("/name", allName)
 	mux.HandleFunc("/shopDetails", api.ShopDetailsHandler)
 	mux.HandleFunc("/createHairdresser", api.CreateHairdresser)
