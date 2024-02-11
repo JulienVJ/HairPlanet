@@ -24,16 +24,16 @@ type Shop struct {
 
 // Hairdresser struct represents a hairdresser document in MongoDB
 type Hairdresser struct {
-	ID      string `bson:"_id"`
-	ShopID  string `bson:"shop_id"`
-	FirstName    string `bson:"firstName"`
-	LastName string `bson:"lastName"`
+	ID        string `bson:"_id"`
+	ShopID    string `bson:"shop_id"`
+	FirstName string `bson:"firstName"`
+	LastName  string `bson:"lastName"`
 }
 
 func connectDB() (*mongo.Client, error) {
 	if err := godotenv.Load(); err != nil {
-        log.Fatalf("Erreur lors du chargement du fichier .env: %v", err)
-    }
+		log.Fatalf("Erreur lors du chargement du fichier .env: %v", err)
+	}
 	uri := os.Getenv("MONGODB_URI")
 	log.Println("User :", uri)
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(uri))
@@ -63,7 +63,6 @@ func AllDetailsShopByName(shopName string) ([]byte, error) {
 
 	log.Println("User ID:", userID)
 	log.Println("Shop ID:", shopID)
-
 
 	hairdresserCollection := client.Database("HairPlanet").Collection("hairdresser")
 	cursor, err := hairdresserCollection.Find(context.TODO(), bson.D{{"shop_id", shopID}})

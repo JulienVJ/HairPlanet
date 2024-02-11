@@ -4,6 +4,8 @@ import Home from './routes/Home';
 import Test from './routes/Test';
 import Shop from './routes/Shop';
 import FormHairdresser from './routes/FormHairdresser';
+import Reservations from './routes/AllReservations';
+import Users from './routes/AllUsers';
 import Login from './routes/Login';
 import Register from './routes/Register'
 
@@ -17,6 +19,8 @@ function App() {
         <Route path="/test" element={<Test />} />
         <Route path="/shop/:shopName" element={<Shop />} />
         <Route path="/createHairdresser" element={<FormHairdresser />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/reservations" element={<Reservations />} />
         {/* 
             <Route path="/contact" element={<Contact />} />
             <Route element={<NOT FOUND />} /> This is the 404 route 

@@ -1,11 +1,9 @@
-.shops-title {
+.reservations-title {
     font-size: 32px;
     font-weight: 400;
-    display: flex;
-    align-items: start;
 }
 
-.shops-cards {
+.reservations-cards {
     padding: 32px;
     border: double;
     display: flex;
@@ -14,7 +12,7 @@
     border-radius: 10px;
 }
 
-.shop-card {
+.reservation-card {
     padding: 16px;
     border: outset;
     display: flex;
