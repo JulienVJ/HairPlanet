@@ -6,12 +6,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
-	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // RegistrationRequest représente les données d'inscription reçues depuis la requête HTTP
@@ -19,19 +15,6 @@ type RegistrationRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	IsShop   bool   `json:"is_shop"`
-}
-
-func connectDB() (*mongo.Client, error) {
-	if err := godotenv.Load(); err != nil {
-        log.Fatalf("Erreur lors du chargement du fichier .env: %v", err)
-    }
-	uri := os.Getenv("MONGODB_URI")
-	log.Println("User :", uri)
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(uri))
-	if err != nil {
-		return nil, err
-	}
-	return client, nil
 }
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
@@ -65,7 +48,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	_, err = collection.InsertOne(context.Background(), bson.M{
 		"email":    registrationReq.Email,
 		"password": registrationReq.Password,
-		"isShop": registrationReq.IsShop,
+		"isShop":   registrationReq.IsShop,
 	})
 	if err != nil {
 		http.Error(w, "Error inserting registration data", http.StatusInternalServerError)
@@ -91,29 +74,28 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 // Add debugging statements
 func RegisterUser(email string, password string, isShop bool) error {
-    fmt.Println("isShop value:", isShop) // Debugging statement
+	fmt.Println("isShop value:", isShop) // Debugging statement
 
-    client, err := connectDB()
-    if err != nil {
-        return err
-    }
-    defer client.Disconnect(context.Background())
+	client, err := connectDB()
+	if err != nil {
+		return err
+	}
+	defer client.Disconnect(context.Background())
 
-    role := "CLIENT"
-    if isShop {
-        role = "SHOP"
-    }
+	role := "CLIENT"
+	if isShop {
+		role = "SHOP"
+	}
 
-    usersCollection := client.Database("HairPlanet").Collection("users")
-    _, err = usersCollection.InsertOne(context.Background(), bson.M{
-        "email":    email,
-        "password": password,
-        "role":     role,
-    })
-    if err != nil {
-        return err
-    }
+	usersCollection := client.Database("HairPlanet").Collection("users")
+	_, err = usersCollection.InsertOne(context.Background(), bson.M{
+		"email":    email,
+		"password": password,
+		"role":     role,
+	})
+	if err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
-
