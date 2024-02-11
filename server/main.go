@@ -34,7 +34,7 @@ func allName(w http.ResponseWriter, r *http.Request) {
 }
 
 func allShops(w http.ResponseWriter, r *http.Request) {
-	// Call the GetAllName function to get JSON data
+	// Call the GetShops function to get JSON data
 	jsonData, err := api.GetShops()
 	jsonResponse(w, jsonData, err)
 }
