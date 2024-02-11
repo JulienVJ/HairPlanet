@@ -7,7 +7,12 @@ const Register = () => {
     const [registrationData, setRegistrationData] = useState({
         email: '',
         password: '',
-        isShop: false
+        isShop: false,
+        firstName: '',
+        lastName: '',
+        shopName: '',
+        phone: '',
+        address: ''
     });
 
     const handleInputChange = (event) => {
@@ -77,10 +82,64 @@ const Register = () => {
                         required
                         margin="normal"
                     />
+                    {registrationData.isShop && (
+                        <>
+                            <TextField
+                                id="firstName"
+                                name="firstName"
+                                label="Prénom"
+                                value={registrationData.firstName}
+                                onChange={handleInputChange}
+                                fullWidth
+                                required
+                                margin="normal"
+                            />
+                            <TextField
+                                id="lastName"
+                                name="lastName"
+                                label="Nom"
+                                value={registrationData.lastName}
+                                onChange={handleInputChange}
+                                fullWidth
+                                required
+                                margin="normal"
+                            />
+                            <TextField
+                                id="shopName"
+                                name="shopName"
+                                label="Nom du magasin"
+                                value={registrationData.shopName}
+                                onChange={handleInputChange}
+                                fullWidth
+                                required
+                                margin="normal"
+                            />
+                            <TextField
+                                id="phone"
+                                name="phone"
+                                label="Téléphone"
+                                value={registrationData.phone}
+                                onChange={handleInputChange}
+                                fullWidth
+                                required
+                                margin="normal"
+                            />
+                            <TextField
+                                id="address"
+                                name="address"
+                                label="Adresse"
+                                value={registrationData.address}
+                                onChange={handleInputChange}
+                                fullWidth
+                                required
+                                margin="normal"
+                            />
+                        </>
+                    )}
                     <div>
                         <FormControlLabel
                             control={<Checkbox name="isShop" checked={registrationData.isShop} onChange={handleCheckboxChange} />}
-                            label="S'nscrire en tant que magasin"
+                            label="S'inscrire en tant que magasin"
                         />
                     </div>
                     <div>

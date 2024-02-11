@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -12,9 +11,14 @@ import (
 
 // RegistrationRequest représente les données d'inscription reçues depuis la requête HTTP
 type RegistrationRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	IsShop   bool   `json:"is_shop"`
+	Email     string  `json:"email"`
+	Password  string  `json:"password"`
+	IsShop    bool    `json:"is_shop"`
+	FirstName *string `json:"first_name,omitempty"`
+	LastName  *string `json:"last_name,omitempty"`
+	ShopName  *string `json:"shop_name,omitempty"`
+	Phone     *string `json:"phone,omitempty"`
+	Address   *string `json:"address,omitempty"`
 }
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
@@ -37,19 +41,32 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	defer client.Disconnect(context.Background())
 
 	// Insérez les données dans la collection appropriée en fonction de IsShop
-	var collectionName string
-	if registrationReq.IsShop {
-		collectionName = "shops"
-	} else {
-		collectionName = "users"
-	}
 
-	collection := client.Database("HairPlanet").Collection(collectionName)
-	_, err = collection.InsertOne(context.Background(), bson.M{
+	collection := client.Database("HairPlanet").Collection("users")
+	userData := bson.M{
 		"email":    registrationReq.Email,
 		"password": registrationReq.Password,
 		"isShop":   registrationReq.IsShop,
-	})
+	}
+
+	// Ajout des champs optionnels s'ils sont définis
+	if registrationReq.FirstName != nil {
+		userData["firstName"] = *registrationReq.FirstName
+	}
+	if registrationReq.LastName != nil {
+		userData["lastName"] = *registrationReq.LastName
+	}
+	if registrationReq.ShopName != nil {
+		userData["shopName"] = *registrationReq.ShopName
+	}
+	if registrationReq.Phone != nil {
+		userData["phone"] = *registrationReq.Phone
+	}
+	if registrationReq.Address != nil {
+		userData["address"] = *registrationReq.Address
+	}
+	_, err = collection.InsertOne(context.Background(), userData)
+
 	if err != nil {
 		http.Error(w, "Error inserting registration data", http.StatusInternalServerError)
 		log.Printf("Error inserting registration data: %v", err)
@@ -73,29 +90,48 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // Add debugging statements
-func RegisterUser(email string, password string, isShop bool) error {
-	fmt.Println("isShop value:", isShop) // Debugging statement
+func RegisterUser(email string, password string, isShop bool, firstName *string, lastName *string, shopName *string, phone *string, address *string) error {
+    client, err := connectDB()
+    if err != nil {
+        return err
+    }
+    defer client.Disconnect(context.Background())
 
-	client, err := connectDB()
-	if err != nil {
-		return err
-	}
-	defer client.Disconnect(context.Background())
+    role := "CLIENT"
+    if isShop {
+        role = "SHOP"
+    }
 
-	role := "CLIENT"
-	if isShop {
-		role = "SHOP"
-	}
+    // Création de la structure de données pour l'insertion
+    userData := bson.M{
+        "email":    email,
+        "password": password,
+        "role":     role,
+    }
 
-	usersCollection := client.Database("HairPlanet").Collection("users")
-	_, err = usersCollection.InsertOne(context.Background(), bson.M{
-		"email":    email,
-		"password": password,
-		"role":     role,
-	})
-	if err != nil {
-		return err
-	}
+    // Ajout des champs optionnels s'ils sont définis
+    if firstName != nil {
+        userData["firstName"] = *firstName
+    }
+    if lastName != nil {
+        userData["lastName"] = *lastName
+    }
+    if shopName != nil {
+        userData["shopName"] = *shopName
+    }
+    if phone != nil {
+        userData["phone"] = *phone
+    }
+    if address != nil {
+        userData["address"] = *address
+    }
 
-	return nil
+    // Insertion des données dans la collection "users" de la base de données
+    usersCollection := client.Database("HairPlanet").Collection("users")
+    _, err = usersCollection.InsertOne(context.Background(), userData)
+    if err != nil {
+        return err
+    }
+
+    return nil
 }

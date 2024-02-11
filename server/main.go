@@ -31,32 +31,39 @@ func allName(w http.ResponseWriter, r *http.Request) {
 }
 
 func registerUser(w http.ResponseWriter, r *http.Request) {
-	// Decode JSON data from the request body
-	var registrationData struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-		IsShop   bool   `json:"isShop"`
-	}
-	err := json.NewDecoder(r.Body).Decode(&registrationData)
-	if err != nil {
-		// Handle the decoding error (e.g., return a bad request response)
-		http.Error(w, "Bad Request", http.StatusBadRequest)
-		log.Printf("Error decoding request body: %v", err)
-		return
-	}
-	// Call the appropriate registration function
-	err = api.RegisterUser(registrationData.Email, registrationData.Password, registrationData.IsShop)
+    // Decode JSON data from the request body
+    var registrationData struct {
+        Email    string `json:"email"`
+        Password string `json:"password"`
+        IsShop   bool   `json:"isShop"`
+        // Champs facultatifs
+        FirstName *string `json:"firstName,omitempty"`
+        LastName  *string `json:"lastName,omitempty"`
+        ShopName  *string `json:"shopName,omitempty"`
+        Phone     *string `json:"phone,omitempty"`
+        Address   *string `json:"address,omitempty"`
+    }
+    err := json.NewDecoder(r.Body).Decode(&registrationData)
+    if err != nil {
+        // Handle the decoding error (e.g., return a bad request response)
+        http.Error(w, "Bad Request", http.StatusBadRequest)
+        log.Printf("Error decoding request body: %v", err)
+        return
+    }
 
-	if err != nil {
-		// Handle the registration error (e.g., return an error response)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		log.Printf("Error registering user/shop: %v", err)
-		return
-	}
+    // Call the appropriate registration function
+    err = api.RegisterUser(registrationData.Email, registrationData.Password, registrationData.IsShop, registrationData.FirstName, registrationData.LastName, registrationData.ShopName, registrationData.Phone, registrationData.Address)
 
-	// Return a success response
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Registration successful"))
+    if err != nil {
+        // Handle the registration error (e.g., return an error response)
+        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+        log.Printf("Error registering user/shop: %v", err)
+        return
+    }
+
+    // Return a success response
+    w.WriteHeader(http.StatusOK)
+    w.Write([]byte("Registration successful"))
 }
 
 func loginUser(w http.ResponseWriter, r *http.Request) {
