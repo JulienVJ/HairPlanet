@@ -1,13 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import "../styles/Home.css"
+import { Container, Box, List, ListItem, ListItemText, Link } from '@mui/material';
 
-const Home = () => {
+function Home() {
+  const [shops, setShops] = useState([])
+  useEffect(() => {
+    const fetchShops = async () => {
+      try {
+        const response = await fetch('http://localhost:9192/home');
+        if (!response.ok) {
+          throw new Error('Failed to fetch shops');
+        }
+        const data = await response.json();
+        console.log(data)
+        setShops(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchShops();
+  }, []);
 
-
-    return (
-        <div>
-            <h1>home</h1>
+  return (
+    <Container>
+      <Box>
+        <h1 className='shops-title'>HairPlanet</h1>
+        <div className='shops-cards'>
+        <List >
+          {shops.map(shop => (<ListItem key={shop._id}><Link href={`/shop/${shop.shopName}`}><ListItemText primary={shop.shopName} secondary={shop.address} /></Link></ListItem>))}
+        </List>
         </div>
-    );
-};
+      </Box>
+    </Container>
+  );
+}
 
 export default Home;
