@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"github.com/dgrijalva/jwt-go"
     "go.mongodb.org/mongo-driver/bson/primitive"
+    "golang.org/x/crypto/bcrypt"
 )
 
 // LoginRequest représente les données de connexion reçues depuis la requête HTTP
@@ -51,17 +52,28 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
     }
     defer client.Disconnect(context.Background())
 
-    // Vérifiez si l'utilisateur existe et si le mot de passe correspond
+    // Vérifiez si l'utilisateur existe et récupérez ses données
     collection := client.Database("HairPlanet").Collection("users")
     var user bson.M
-    err = collection.FindOne(context.Background(), bson.M{"email": loginReq.Email, "password": loginReq.Password}).Decode(&user)
+    err = collection.FindOne(context.Background(), bson.M{"email": loginReq.Email}).Decode(&user)
     if err != nil {
         http.Error(w, "Invalid email or password", http.StatusUnauthorized)
         log.Printf("Error finding user: %v", err)
         return
     }
 
-    // Générer un token d'authentification (vous devrez implémenter cette fonctionnalité)
+    // Vérifiez si les mots de passe correspondent
+    storedPassword := user["password"].(string)
+    err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(loginReq.Password))
+    if err != nil {
+        http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+        log.Printf("Password does not match: %v", err)
+        return
+    }
+
+    // Le mot de passe correspond, poursuivre le processus d'authentification...
+
+    // Générer un token d'authentification
     authToken, err := generateAuthToken(user["_id"].(primitive.ObjectID))
     if err != nil {
         http.Error(w, "Error generating authentication token", http.StatusInternalServerError)
@@ -86,22 +98,32 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginUser(email string, password string) (string, error) {
-    // Connectez-vous à la base de données (vous devrez implémenter cette fonction)
+    // Connectez-vous à la base de données
     client, err := connectDB()
     if err != nil {
         return "", err
     }
     defer client.Disconnect(context.Background())
 
-    // Vérifiez les informations d'identification dans la base de données
+    // Récupérez les informations de l'utilisateur à partir de l'email
     collection := client.Database("HairPlanet").Collection("users")
     var user bson.M
-    err = collection.FindOne(context.Background(), bson.M{"email": email, "password": password}).Decode(&user)
+    err = collection.FindOne(context.Background(), bson.M{"email": email}).Decode(&user)
     if err != nil {
         return "", err
     }
 
-    // Générer un token d'authentification
+    // Récupérez le mot de passe haché de l'utilisateur
+    storedPassword := user["password"].(string)
+
+    // Vérifiez si les mots de passe correspondent en utilisant bcrypt
+    err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
+    if err != nil {
+        // La comparaison des mots de passe a échoué, retournez une erreur d'authentification
+        return "", err
+    }
+
+    // Si les mots de passe correspondent, générez un token d'authentification
     authToken, err := generateAuthToken(user["_id"].(primitive.ObjectID))
     if err != nil {
         return "", err

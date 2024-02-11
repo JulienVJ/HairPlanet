@@ -51,7 +51,7 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // Call the appropriate registration function
+    // Call the appropriate registration function with the password
     err = api.RegisterUser(registrationData.Email, registrationData.Password, registrationData.IsShop, registrationData.FirstName, registrationData.LastName, registrationData.ShopName, registrationData.Phone, registrationData.Address)
 
     if err != nil {
@@ -66,43 +66,45 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte("Registration successful"))
 }
 
+
 func loginUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-		log.Printf("Invalid HTTP method: %s", r.Method)
-		return
-	}
+    // Assurez-vous que la méthode HTTP est POST
+    if r.Method != "POST" {
+        http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+        log.Printf("Invalid HTTP method: %s", r.Method)
+        return
+    }
 
-	// Decode JSON data from the request body
-	var loginData struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-	err := json.NewDecoder(r.Body).Decode(&loginData)
-	if err != nil {
-		http.Error(w, "Bad Request", http.StatusBadRequest)
-		log.Printf("Error decoding login request: %v", err)
-		return
-	}
+    // Decode JSON data from the request body
+    var loginData struct {
+        Email    string `json:"email"`
+        Password string `json:"password"`
+    }
+    err := json.NewDecoder(r.Body).Decode(&loginData)
+    if err != nil {
+        http.Error(w, "Bad Request", http.StatusBadRequest)
+        log.Printf("Error decoding login request: %v", err)
+        return
+    }
 
-	log.Printf("Login request received: %+v", loginData) // Adding log to display received data
+    log.Printf("Login request received: %+v", loginData) // Log received login data
 
-	// Call the appropriate login function
-	authToken, err := api.LoginUser(loginData.Email, loginData.Password)
-	if err != nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		log.Printf("Error logging in: %v", err)
-		return
-	}
+    // Appel de la fonction de connexion appropriée pour vérifier les informations d'identification de l'utilisateur
+    authToken, err := api.LoginUser(loginData.Email, loginData.Password)
+    if err != nil {
+        http.Error(w, "Unauthorized", http.StatusUnauthorized)
+        log.Printf("Error logging in: %v", err)
+        return
+    }
 
-	// Return the authentication token in the response
-	response := map[string]string{"token": authToken}
-	err = json.NewEncoder(w).Encode(response)
-	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		log.Printf("Error encoding response: %v", err)
-		return
-	}
+    // Return the authentication token in the response
+    response := map[string]string{"token": authToken}
+    err = json.NewEncoder(w).Encode(response)
+    if err != nil {
+        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+        log.Printf("Error encoding response: %v", err)
+        return
+    }
 }
 
 func handleRequests() {

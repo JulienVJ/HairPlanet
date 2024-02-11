@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // RegistrationRequest représente les données d'inscription reçues depuis la requête HTTP
@@ -91,6 +93,14 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 // Add debugging statements
 func RegisterUser(email string, password string, isShop bool, firstName *string, lastName *string, shopName *string, phone *string, address *string) error {
+    // Hacher le mot de passe
+    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+    if err != nil {
+        return err
+    }
+
+    fmt.Println("isShop value:", isShop) // Debugging statement
+
     client, err := connectDB()
     if err != nil {
         return err
@@ -105,7 +115,7 @@ func RegisterUser(email string, password string, isShop bool, firstName *string,
     // Création de la structure de données pour l'insertion
     userData := bson.M{
         "email":    email,
-        "password": password,
+        "password": string(hashedPassword), // Utiliser le mot de passe haché
         "role":     role,
     }
 
