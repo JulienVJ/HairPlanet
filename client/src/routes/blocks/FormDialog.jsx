@@ -48,14 +48,15 @@ export default function FormDialog({ shopDetails }) {
     )
     React.useEffect(() => {
         if (shopDetails) {
+            const storedUserId = localStorage.getItem('userId');
             setResa({
                 ...resa,
-                shop_id: shopDetails.user._id
+                shop_id: shopDetails.user._id,
+                user_id: storedUserId
             });
         }
     }, [shopDetails]);
 
-    console.log(resa)
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -130,7 +131,12 @@ export default function FormDialog({ shopDetails }) {
                         <DatePicker onChange={handleDateChange} />
                     </div>
                     {resa.date && hours.map((h) => {
-                        const isReserved = shopDetails.reservations.some((r) => r.date === resa.date && r.hours === h.value);
+                        const isReserved = shopDetails.reservations.some(
+                            (r) =>
+                                r.date === resa.date &&
+                                r.hours === h.value &&
+                                r.employee_id === resa.employee_id
+                        );
                         return (
                             <Button
                                 key={h.value}

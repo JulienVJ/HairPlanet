@@ -8,16 +8,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-type Reservation struct {
-	ID         string `json:"_id" bson:"_id"`
-	ShopID     string `json:"shop_id" bson:"shop_id"`
-	EmployeeID string `json:"employee_id" bson:"employee_id"`
-	UserID     string `json:"user_id" bson:"user_id"`
-	Date       string `json:"date" bson:"date"`
-	Hours      string `json:"hours" bson:"hours"`
-}
-
-
 func CreateReservation(w http.ResponseWriter, r *http.Request) {
 	// Check if the request method is POST
 	if r.Method != http.MethodPost {
