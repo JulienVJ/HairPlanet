@@ -3,26 +3,14 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"net/http"
 	"fmt"
 	"log"
+	"net/http"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// RegistrationRequest représente les données d'inscription reçues depuis la requête HTTP
-type RegistrationRequest struct {
-	Email     string  `json:"email"`
-	Password  string  `json:"password"`
-	IsShop    bool    `json:"is_shop"`
-	FirstName *string `json:"first_name,omitempty"`
-	LastName  *string `json:"last_name,omitempty"`
-	ShopName  *string `json:"shop_name,omitempty"`
-	Phone     *string `json:"phone,omitempty"`
-	Address   *string `json:"address,omitempty"`
-	Zip       *string `json:"zip,omitempty"` // Nouveau champ
-	City      *string `json:"city,omitempty"` // Nouveau champ
-}
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
     // Parsez les données JSON de la requête
@@ -67,13 +55,6 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
     }
     if registrationReq.Address != nil {
         userData["address"] = *registrationReq.Address
-    }
-    // Ajouter les nouveaux champs Zip et City
-    if registrationReq.Zip != nil {
-        userData["zip"] = *registrationReq.Zip
-    }
-    if registrationReq.City != nil {
-        userData["city"] = *registrationReq.City
     }
 
     _, err = collection.InsertOne(context.Background(), userData)
@@ -143,13 +124,6 @@ func RegisterUser(email string, password string, isShop bool, firstName *string,
     }
     if address != nil {
         userData["address"] = *address
-    }
-    // Ajouter les nouveaux champs Zip et City
-    if zip != nil {
-        userData["zip"] = *zip
-    }
-    if city != nil {
-        userData["city"] = *city
     }
     // Insertion des données dans la collection "users" de la base de données
     usersCollection := client.Database("HairPlanet").Collection("users")

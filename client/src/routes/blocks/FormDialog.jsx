@@ -48,14 +48,15 @@ export default function FormDialog({ shopDetails }) {
     )
     React.useEffect(() => {
         if (shopDetails) {
+            const storedUserId = localStorage.getItem('userId');
             setResa({
                 ...resa,
-                shop_id: shopDetails.user._id
+                shop_id: shopDetails.user._id,
+                user_id: storedUserId
             });
         }
     }, [shopDetails]);
 
-    console.log(resa)
     const handleClickOpen = () => {
         setOpen(true);
     };

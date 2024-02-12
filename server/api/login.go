@@ -6,18 +6,13 @@ import (
 	"log"
 	"net/http"
 
-	"go.mongodb.org/mongo-driver/bson"
 	"github.com/dgrijalva/jwt-go"
-    "go.mongodb.org/mongo-driver/bson/primitive"
-    "golang.org/x/crypto/bcrypt"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // LoginRequest représente les données de connexion reçues depuis la requête HTTP
-type LoginRequest struct {
-    Email    string `json:"email"`
-    Password string `json:"password"`
-}
-
 func generateAuthToken(userID primitive.ObjectID) (string, error) {
     // Créer un token avec l'ID utilisateur comme payload
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{

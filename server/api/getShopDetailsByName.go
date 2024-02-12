@@ -14,22 +14,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Shop struct represents a user document in MongoDB
-type Shop struct {
-	ID   string `bson:"_id"`
-	shopName string `bson:"shopName"`
-	phone string `bson:"phone"`
-	address string `bson:"address"`
-}
-
-// Hairdresser struct represents a hairdresser document in MongoDB
-type Hairdresser struct {
-	ID        string `bson:"_id"`
-	ShopID    string `bson:"shop_id"`
-	FirstName string `bson:"firstName"`
-	LastName  string `bson:"lastName"`
-}
-
 func connectDB() (*mongo.Client, error) {
 	if err := godotenv.Load(); err != nil {
 		log.Fatalf("Erreur lors du chargement du fichier .env: %v", err)

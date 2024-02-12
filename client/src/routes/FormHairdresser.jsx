@@ -3,10 +3,11 @@ import Container from '@mui/material/Container';
 import { Box, Button, TextField } from '@mui/material';
 
 const FormHairdresser = () => {
+    const storedUserId = localStorage.getItem('userId');
     const [haidresser, setHairdresser] = useState({
         firstName: "",
         lastName: "",
-        ShopID: "65bf8488e1e13e13c430c664",
+        ShopID: storedUserId,
     })
 
     const handleChange = (e) => {
