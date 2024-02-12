@@ -5,15 +5,13 @@ function Reservations() {
   const [reservations, setReservations] = useState([]);
 
   useEffect(() => {
-    // Fetch data from the Golang API
     fetch('http://localhost:9192/reservations')
       .then(response => response.json())
       .then(data => {
-        // Assuming the API returns an array of reservations
         setReservations(data);
       })
       .catch(error => console.error('Error fetching data:', error));
-  }, []); // Empty dependency array means this effect runs once after the first render
+  }, []);
 
   console.log(reservations)
   return (

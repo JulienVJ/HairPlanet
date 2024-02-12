@@ -38,10 +38,8 @@ func GetShops() ([]byte, error) {
 
 	coll := client.Database("HairPlanet").Collection("users")
 
-	// Define a filter (empty in this example to get all documents)
 	filter := bson.M{"role": "SHOP"}
 
-	// Find documents in the collection
 	cursor, err := coll.Find(context.TODO(), filter)
 	if err != nil {
 		log.Printf("Error querying MongoDB: %v", err)
@@ -49,14 +47,12 @@ func GetShops() ([]byte, error) {
 	}
 	defer cursor.Close(context.TODO())
 
-	// Decode the results
 	var results []bson.M
 	if err := cursor.All(context.TODO(), &results); err != nil {
 		log.Printf("Error decoding MongoDB results: %v", err)
 		return nil, err
 	}
 
-	// Print or use the results as JSON
 	jsonData, err := json.MarshalIndent(results, "", "    ")
 	if err != nil {
 		log.Printf("Error encoding JSON: %v", err)

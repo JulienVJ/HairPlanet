@@ -9,7 +9,7 @@ import (
 )
 
 func CreateHairdresser(w http.ResponseWriter, r *http.Request) {
-	// Check if the request method is POST
+	// Vérifie que la requête est une méthode POST
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -22,8 +22,7 @@ func CreateHairdresser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-
-	// Connect to the MongoDB database
+	// Connexion à la BDD
 	client, err := connectDB()
 	if err != nil {
 		http.Error(w, "Error connecting to database", http.StatusInternalServerError)
@@ -42,7 +41,7 @@ func CreateHairdresser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Respond with success
+	// Réponse 200
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("Hairdresser created successfully"))
 }

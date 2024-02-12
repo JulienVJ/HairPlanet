@@ -38,10 +38,10 @@ func GetAllUsers() ([]byte, error) {
 
 	coll := client.Database("HairPlanet").Collection("users")
 
-	// Define a filter (empty in this example to get all documents)
+	// Filtre vide pour tout récupérer
 	filter := bson.M{}
 
-	// Find documents in the collection
+	// Chercher dans la collection
 	cursor, err := coll.Find(context.TODO(), filter)
 	if err != nil {
 		log.Printf("Error querying MongoDB: %v", err)
@@ -49,14 +49,13 @@ func GetAllUsers() ([]byte, error) {
 	}
 	defer cursor.Close(context.TODO())
 
-	// Decode the results
 	var results []bson.M
 	if err := cursor.All(context.TODO(), &results); err != nil {
 		log.Printf("Error decoding MongoDB results: %v", err)
 		return nil, err
 	}
 
-	// Print or use the results as JSON
+	// Resultat en JSONS
 	jsonData, err := json.MarshalIndent(results, "", "    ")
 	if err != nil {
 		log.Printf("Error encoding JSON: %v", err)
