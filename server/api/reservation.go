@@ -9,7 +9,7 @@ import (
 )
 
 func CreateReservation(w http.ResponseWriter, r *http.Request) {
-	// Check if the request method is POST
+	// Vérifie que la reqête est une méthode POST
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -22,8 +22,7 @@ func CreateReservation(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-
-	// Connect to the MongoDB database
+	// Connexion à la BDD
 	client, err := connectDB()
 	if err != nil {
 		http.Error(w, "Error connecting to database", http.StatusInternalServerError)
@@ -33,11 +32,11 @@ func CreateReservation(w http.ResponseWriter, r *http.Request) {
 
 	reservationCollection := client.Database("HairPlanet").Collection("reservations")
 	_, err = reservationCollection.InsertOne(context.Background(), bson.M{
-		"shop_id": reservation.ShopID,
-		"employee_id":reservation.EmployeeID,
-		"user_id":reservation.UserID,
-		"date":reservation.Date,
-		"hours":reservation.Hours,
+		"shop_id":     reservation.ShopID,
+		"employee_id": reservation.EmployeeID,
+		"user_id":     reservation.UserID,
+		"date":        reservation.Date,
+		"hours":       reservation.Hours,
 	})
 
 	if err != nil {
@@ -45,7 +44,7 @@ func CreateReservation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Respond with success
+	//Réponse 200
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("Reservation created successfully"))
 }

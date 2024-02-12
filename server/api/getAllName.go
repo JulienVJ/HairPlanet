@@ -1,11 +1,11 @@
 package api
 
 import (
-	"log"
-	"os"
-	"fmt"
 	"context"
 	"encoding/json"
+	"fmt"
+	"log"
+	"os"
 
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
@@ -17,7 +17,7 @@ func GetAllName() ([]byte, error) {
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
 	}
-	
+
 	uri := os.Getenv("MONGODB_URI")
 	if uri == "" {
 		log.Fatal("You must set your 'MONGODB_URI' environment variable.")
@@ -38,10 +38,8 @@ func GetAllName() ([]byte, error) {
 
 	coll := client.Database("HairPlanet").Collection("HairTest")
 
-	// Define a filter (empty in this example to get all documents)
 	filter := bson.M{}
 
-	// Find documents in the collection
 	cursor, err := coll.Find(context.TODO(), filter)
 	if err != nil {
 		log.Printf("Error querying MongoDB: %v", err)
@@ -49,14 +47,12 @@ func GetAllName() ([]byte, error) {
 	}
 	defer cursor.Close(context.TODO())
 
-	// Decode the results
 	var results []bson.M
 	if err := cursor.All(context.TODO(), &results); err != nil {
 		log.Printf("Error decoding MongoDB results: %v", err)
 		return nil, err
 	}
 
-	// Print or use the results as JSON
 	jsonData, err := json.MarshalIndent(results, "", "    ")
 	if err != nil {
 		log.Printf("Error encoding JSON: %v", err)

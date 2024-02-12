@@ -12,7 +12,7 @@ import (
 )
 
 func InsertIntoHairTest() {
-	//RECUPERER EN MODE POST 
+	//RECUPERER EN MODE POST
 
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
@@ -34,7 +34,7 @@ func InsertIntoHairTest() {
 		}
 	}()
 
-	// Call insertOneHairTest
+	// Appel insertOneHairTest
 	insertOneHairTest(client, "Matthieu", 15)
 }
 
